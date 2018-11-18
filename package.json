@@ -1,6 +1,6 @@
 {
   "name": "parcel-plugin-shebang",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "repository": "https://github.com/sintloer/parcel-plugin-shebang",
   "author": "sintloer",
@@ -8,11 +8,12 @@
   "scripts": {
     "test": "jest"
   },
-  "bin": {
-    "shebang-plugin-init": "./init.js"
-  },
   "devDependencies": {
     "jest": "^23.6.0",
-    "parcel-bundler": "^1.10.3"
+    "rimraf": "^2.6.2"
+  },
+  "dependencies": {
+    "parcel-bundler": "^1.10.3",
+    "yn": "^2.0.0"
   }
 }

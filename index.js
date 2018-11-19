@@ -28,6 +28,10 @@ const write = (name, shebang) => {
   }
 };
 
+const isJsFile = (filename) => {
+  return filename.split('.').pop() === 'js';
+};
+
 module.exports = bundler => {
   if (
     bundler.options.target !== 'node'
@@ -40,11 +44,13 @@ module.exports = bundler => {
     const { name, childBundles } = bundle;
     const shebang = getShebang();
 
-    if (name) {
+    if (name && isJsFile(name)) {
       write(name, shebang);
     } else {
       childBundles.forEach(({ name }) => {
-        write(name, shebang);
+        if (isJsFile(name)) {
+          write(name, shebang);
+        }
       });
     }
   });

@@ -7,80 +7,133 @@ const fs = require('fs');
 const rimraf = require('rimraf');
 const Bundler = require('parcel-bundler');
 const shebangPlugin = require('./index');
+const { getShebang } = require('./utils');
 
 const exampleJsFile = path.join(__dirname, 'mocks/example.js');
+const example2JsFile = path.join(__dirname, 'mocks/example2.js');
 const exampleHtmlFile = path.join(__dirname, 'mocks/example.html');
 
-describe('parcel-plugin-shebang', () => {
-  afterEach(() => {
-    rimraf.sync(path.join(__dirname, './test'));
-  });
+const parcelConfig = {
+  target: 'node',
+  outDir: './test',
+  watch: false,
+  cache: false,
+  logLevel: 0,
+  sourceMaps: false,
+  production: true
+};
 
-  it('should not plugin works when target is browser', () => {
-    const bundler = new Bundler(exampleJsFile, {
-      target: 'browser'
-    });
+describe('parcel-plugin-shebang testing', () => {
+  createBundler = entryFiles => new Bundler(entryFiles, parcelConfig);
+  hasShebang = (content, shebang = '') => content.includes(`${getShebang(shebang)}\n`);
 
-    expect(shebangPlugin(bundler)).toBeFalsy();
-  });
+  beforeEach(() => delete process.env['PARCEL_PLUGIN_SHEBANG']);
 
-  it('should not plugin works when environment variable is false', () => {
-    const bundler = new Bundler(exampleJsFile, {
-      target: 'node'
-    });
-
+  afterEach(() => rimraf.sync(path.join(__dirname, './test')));
+  
+  it('should stop plugin process when PARCEL_PLUGIN_SHEBANG environment variable is false', () => {
     process.env.PARCEL_PLUGIN_SHEBANG = false;
-    expect(shebangPlugin(bundler)).toBeFalsy();
+
+    const bundler = createBundler(exampleJsFile);
+    const result = shebangPlugin(bundler);
+
+    expect(result).toBeFalsy();
   });
 
-  it('should plugin works when environment variable is true', () => {
-    const bundler = new Bundler(exampleJsFile, {
-      target: 'node'
-    });
+  it('should stop plugin process when config is empty', () => {
+    const bundler = createBundler(exampleJsFile);
+    const result = shebangPlugin(bundler, []);
 
-    process.env.PARCEL_PLUGIN_SHEBANG = true;
-    expect(shebangPlugin(bundler)).toBeTruthy();
+    expect(result).toBeFalsy();
   });
 
-  it('should plugin works when target is node', () => {
-    const bundler = new Bundler(exampleJsFile, {
-      target: 'node'
-    });
+  it('should stop plugin process when config is invalid', () => {
+    const bundler = createBundler(exampleJsFile);
+    const result = shebangPlugin(bundler, [
+      { test: 'It should not working!' },
+      { test2: 'It should not working too!' },
+    ]);
 
-    expect(shebangPlugin(bundler)).toBeTruthy();
+    expect(result).toBeFalsy();
   });
 
-  it('should bundled js file contains shebang', async () => {
-    const bundler = new Bundler(exampleJsFile, {
-      outDir: path.join(__dirname, '/test'),
-      target: 'node',
-      watch: false,
-      cache: false,
-      hmr: false,
-      logLevel: 0
-    });
+  it('should plugin process for valid parts of config', async () => {
+    const bundler = createBundler(exampleJsFile);
+    const result = shebangPlugin(bundler, [
+      { test: 'It should not working!' },
+      { test2: 'It should not working too!' },
+      { interpreter: 'node', files: ['./mocks/example.js'] }
+    ]);
 
-    shebangPlugin(bundler);
     await bundler.bundle();
-    const content = fs.readFileSync(path.join(__dirname, './test/example.js'), 'utf8');
+    const content = fs.readFileSync(path.join(__dirname, './test/example.js'), 'utf-8');
 
-    expect(content.includes('#!/usr/bin/env node\n')).toBeTruthy();
+    expect(result).toBeTruthy();
+    expect(hasShebang(content, 'node')).toBeTruthy();
   });
 
-  it('should bundled html file not contains shebang', async () => {
-    const bundler = new Bundler(exampleHtmlFile, {
-      outDir: path.join(__dirname, '/test'),
-      target: 'node',
-      watch: false,
-      cache: false,
-      hmr: false,
-      logLevel: 0
-    });
+  it('should plugin process for multiple entry points', async () => {
+    const bundler = createBundler([exampleJsFile, example2JsFile]);
+    const result = shebangPlugin(bundler, [
+      { interpreter: 'node', files: ['./mocks/example.js', './mocks/example2.js'] }
+    ]);
 
-    shebangPlugin(bundler);
     await bundler.bundle();
-    const content = fs.readFileSync(path.join(__dirname, './test/example.html'), 'utf8');
+    const content = fs.readFileSync(path.join(__dirname, './test/example.js'), 'utf-8');
+    const content2 = fs.readFileSync(path.join(__dirname, './test/example2.js'), 'utf-8');
 
-    expect(content.includes('#!/usr/bin/env node\n')).toBeFalsy();
+    expect(result).toBeTruthy();
+    expect(hasShebang(content, 'node')).toBeTruthy();
+    expect(hasShebang(content2, 'node')).toBeTruthy();
+  });
+
+  it('should plugin process for multiple entry points and different shebangs', async () => {
+    const bundler = createBundler([exampleJsFile, example2JsFile]);
+    const result = shebangPlugin(bundler, [
+      { interpreter: 'node', files: ['./mocks/example.js'] },
+      { interpreter: 'python3', files: ['./mocks/example2.js'] },
+    ]);
+
+    await bundler.bundle();
+    const content = fs.readFileSync(path.join(__dirname, './test/example.js'), 'utf-8');
+    const content2 = fs.readFileSync(path.join(__dirname, './test/example2.js'), 'utf-8');
+
+    expect(result).toBeTruthy();
+    expect(hasShebang(content, 'node')).toBeTruthy();
+    expect(hasShebang(content2, 'python3')).toBeTruthy();
+  });
+
+  it('should not rewrite shebang for entry point', async () => {
+    const bundler = createBundler(exampleJsFile);
+    const result = shebangPlugin(bundler, [
+      { interpreter: 'node', files: ['./mocks/example.js'] },
+      { interpreter: 'python3', files: ['./mocks/example.js'] },
+    ]);
+
+    await bundler.bundle();
+    const content = fs.readFileSync(path.join(__dirname, './test/example.js'), 'utf-8');
+
+    expect(result).toBeTruthy();
+    expect(hasShebang(content, 'node')).toBeTruthy();
+  });
+
+  it('should plugin process for children entry point', async () => {
+    const bundler = createBundler(exampleHtmlFile);
+    const result = shebangPlugin(bundler, [
+      { interpreter: 'python3', files: ['./mocks/example.js'] },
+    ]);
+
+    const bundle = await bundler.bundle();
+
+    let content = '';
+    bundle.childBundles
+      .forEach(({ name, parentBundle }) => {
+        if (parentBundle.entryAsset.name === exampleHtmlFile) {
+          content = fs.readFileSync(name, 'utf-8');
+        }
+      });
+
+    expect(result).toBeTruthy();
+    expect(hasShebang(content, 'python3')).toBeTruthy();
   });
 });

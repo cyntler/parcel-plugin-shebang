@@ -4,14 +4,13 @@
  */
 const path = require('path');
 const fs = require('fs');
-const { isJsFile } = require('./utils');
 
 const CWD = process.cwd();
 
 const validate = obj => {
   return 'interpreter' in obj && typeof obj.interpreter === 'string' && obj.interpreter !== ''
     && 'files' in obj && Array.isArray(obj.files) && obj.files.length
-    && (obj.files.filter(file => fs.existsSync(path.join(CWD, file)) && isJsFile(path.join(CWD, file)))).length;
+    && (obj.files.filter(file => fs.existsSync(path.join(CWD, file)))).length;
 };
 
 const loadConfigFromPackageJson = () => {

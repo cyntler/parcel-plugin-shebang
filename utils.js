@@ -14,10 +14,6 @@ const write = (path, interpreter) => {
   }
 };
 
-const isJsFile = filename => {
-  return filename.split('.').pop() === 'js';
-};
-
 const getShebang = interpreter => {
   return `#!/usr/bin/env ${interpreter}`;
 };
@@ -50,7 +46,6 @@ const newBundle = (name, path) => {
 
 module.exports = {
   write,
-  isJsFile,
   getBundles,
   getShebang
 };

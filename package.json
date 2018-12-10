@@ -1,8 +1,12 @@
 {
   "name": "parcel-plugin-shebang",
   "description": "Shebang plugin for Parcel.",
-  "keywords": ["parcel-bundler", "shebang", "plugin"],
-  "version": "1.1.1",
+  "keywords": [
+    "parcel-bundler",
+    "shebang",
+    "plugin"
+  ],
+  "version": "1.1.2",
   "main": "index.js",
   "repository": "https://github.com/sintloer/parcel-plugin-shebang",
   "author": "sintloer",

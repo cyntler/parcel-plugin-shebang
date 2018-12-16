@@ -19,6 +19,7 @@
     "rimraf": "^2.6.2"
   },
   "dependencies": {
+    "escape-string-regexp": "^1.0.5",
     "parcel-bundler": "^1.10.3",
     "yn": "^2.0.0"
   }

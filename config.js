@@ -4,6 +4,10 @@
  */
 const path = require('path');
 const fs = require('fs');
+const {
+  readFile,
+  existsFile
+} = require('./utils');
 
 const CWD = process.cwd();
 
@@ -15,14 +19,26 @@ const validate = obj => {
 
 const loadConfigFromPackageJson = () => {
   const packageJsonPath = path.join(CWD, 'package.json');
-  if (fs.existsSync(packageJsonPath)) {
-    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+  if (existsFile(packageJsonPath)) {
+    const packageJson = JSON.parse(readFile(packageJsonPath));
     if (packageJson && 'shebang' in packageJson && Array.isArray(packageJson.shebang) && packageJson.shebang.length) {
       return packageJson.shebang;
     }
   }
 
-  return false;
+  return [];
+}
+
+const loadConfigFromShebangRc = () => {
+  const shebangRcPath = path.join(CWD, '.shebangrc');
+  if (existsFile(shebangRcPath)) {
+    const shebangRc = JSON.parse(readFile(shebangRcPath));
+    if (shebangRc && Array.isArray(shebangRc) && shebangRc.length) {
+      return shebangRc;
+    }
+  }
+
+  return [];
 }
 
 const toAbsolutePath = files => files.map(file => path.join(CWD, file));
@@ -30,7 +46,10 @@ const toAbsolutePath = files => files.map(file => path.join(CWD, file));
 const getConfig = (dynamicConfig) => {
   const conf = [];
 
-  const configData = dynamicConfig ? dynamicConfig : loadConfigFromPackageJson();
+  let configData = dynamicConfig
+    ? dynamicConfig
+    : [...loadConfigFromPackageJson(), ...loadConfigFromShebangRc()];
+  
   if (Array.isArray(configData) && configData.length) {
     configData
       .filter(elem => validate(elem))

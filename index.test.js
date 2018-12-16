@@ -7,10 +7,11 @@ const fs = require('fs');
 const rimraf = require('rimraf');
 const Bundler = require('parcel-bundler');
 const shebangPlugin = require('./index');
-const { getShebang } = require('./utils');
+const { hasShebang } = require('./utils');
 
 const exampleJsFile = path.join(__dirname, 'mocks/example.js');
 const example2JsFile = path.join(__dirname, 'mocks/example2.js');
+const exampleWithShebangJsFile = path.join(__dirname, 'mocks/exampleWithShebang.js');
 const exampleHtmlFile = path.join(__dirname, 'mocks/example.html');
 
 const parcelConfig = {
@@ -18,14 +19,13 @@ const parcelConfig = {
   outDir: './test',
   watch: false,
   cache: false,
-  logLevel: 0,
+  logLevel: 2,
   sourceMaps: false,
   production: true
 };
 
 describe('parcel-plugin-shebang testing', () => {
   createBundler = entryFiles => new Bundler(entryFiles, parcelConfig);
-  hasShebang = (content, shebang = '') => content.includes(`${getShebang(shebang)}\n`);
 
   beforeEach(() => delete process.env['PARCEL_PLUGIN_SHEBANG']);
 
@@ -40,21 +40,15 @@ describe('parcel-plugin-shebang testing', () => {
     expect(result).toBeFalsy();
   });
 
-  it('should stop plugin process when config is empty', () => {
-    const bundler = createBundler(exampleJsFile);
-    const result = shebangPlugin(bundler, []);
+  it('should plugin process for shebang found in entry point', async () => {
+    const bundler = createBundler(exampleWithShebangJsFile);
+    const result = shebangPlugin(bundler);
 
-    expect(result).toBeFalsy();
-  });
+    await bundler.bundle();
+    const content = fs.readFileSync(path.join(__dirname, './test/exampleWithShebang.js'), 'utf-8');
 
-  it('should stop plugin process when config is invalid', () => {
-    const bundler = createBundler(exampleJsFile);
-    const result = shebangPlugin(bundler, [
-      { test: 'It should not working!' },
-      { test2: 'It should not working too!' },
-    ]);
-
-    expect(result).toBeFalsy();
+    expect(result).toBeTruthy();
+    expect(hasShebang(content)).toBeTruthy();
   });
 
   it('should plugin process for valid parts of config', async () => {
@@ -69,7 +63,7 @@ describe('parcel-plugin-shebang testing', () => {
     const content = fs.readFileSync(path.join(__dirname, './test/example.js'), 'utf-8');
 
     expect(result).toBeTruthy();
-    expect(hasShebang(content, 'node')).toBeTruthy();
+    expect(hasShebang(content)).toBeTruthy();
   });
 
   it('should plugin process for multiple entry points', async () => {
@@ -83,8 +77,8 @@ describe('parcel-plugin-shebang testing', () => {
     const content2 = fs.readFileSync(path.join(__dirname, './test/example2.js'), 'utf-8');
 
     expect(result).toBeTruthy();
-    expect(hasShebang(content, 'node')).toBeTruthy();
-    expect(hasShebang(content2, 'node')).toBeTruthy();
+    expect(hasShebang(content)).toBeTruthy();
+    expect(hasShebang(content2)).toBeTruthy();
   });
 
   it('should plugin process for multiple entry points and different shebangs', async () => {
@@ -99,8 +93,8 @@ describe('parcel-plugin-shebang testing', () => {
     const content2 = fs.readFileSync(path.join(__dirname, './test/example2.js'), 'utf-8');
 
     expect(result).toBeTruthy();
-    expect(hasShebang(content, 'node')).toBeTruthy();
-    expect(hasShebang(content2, 'python3')).toBeTruthy();
+    expect(hasShebang(content)).toBeTruthy();
+    expect(hasShebang(content2)).toBeTruthy();
   });
 
   it('should not rewrite shebang for entry point', async () => {
@@ -114,7 +108,7 @@ describe('parcel-plugin-shebang testing', () => {
     const content = fs.readFileSync(path.join(__dirname, './test/example.js'), 'utf-8');
 
     expect(result).toBeTruthy();
-    expect(hasShebang(content, 'node')).toBeTruthy();
+    expect(hasShebang(content)).toBeTruthy();
   });
 
   it('should plugin process for children entry point', async () => {
@@ -134,6 +128,6 @@ describe('parcel-plugin-shebang testing', () => {
       });
 
     expect(result).toBeTruthy();
-    expect(hasShebang(content, 'python3')).toBeTruthy();
+    expect(hasShebang(content)).toBeTruthy();
   });
 });

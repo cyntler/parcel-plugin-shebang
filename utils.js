@@ -78,7 +78,7 @@ const getBundles = bundle => {
     });
   }
 
-  if (name && assets) {
+  if (path && assets) {
     if (assets && assets.size) {
       assets.forEach(({ name }) => {
         if (!bundles.find(b => b.name === name)) {

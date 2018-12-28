@@ -43,6 +43,8 @@ The configuration of the plugin is an array of objects describing the name of th
 | `interpreter` | string   | Name of interpreter.                                 |
 | `files`       | string[] | Array of relative paths to the files in which the interpreter is to be used. |
 
+<br>
+
 .shebangrc
 ```json
 [

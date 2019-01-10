@@ -67,8 +67,8 @@ const getBundles = bundle => {
   const bundles = [];
 
   if (childBundles && childBundles.size) {
-    childBundles.forEach(({ name: path, assets }) => {
-      if (assets && assets.size) {
+    childBundles.forEach(({ name: path, assets, type }) => {
+      if (assets && assets.size && type !== 'map') {
         assets.forEach(({ name }) => {
           if (!bundles.find(b => b.name === name)) {
             bundles.push(newBundle(name, path))
@@ -80,8 +80,8 @@ const getBundles = bundle => {
 
   if (path && assets) {
     if (assets && assets.size) {
-      assets.forEach(({ name }) => {
-        if (!bundles.find(b => b.name === name)) {
+      assets.forEach(({ name, type }) => {
+        if (!bundles.find(b => b.name === name) && type !== 'map') {
           bundles.push(newBundle(name, path))
         }
       });

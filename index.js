@@ -1,6 +1,6 @@
 /**
  * Shebang plugin for Parcel.
- * @author sintloer <contact@sintloer.com>
+ * @author cyntl3r <damian@cyntler.com>
  */
 const yn = require('yn');
 const {

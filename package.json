@@ -6,7 +6,7 @@
     "shebang",
     "plugin"
   ],
-  "version": "1.2.3",
+  "version": "1.2.4",
   "main": "index.js",
   "repository": "https://github.com/sintloer/parcel-plugin-shebang",
   "author": "sintloer",

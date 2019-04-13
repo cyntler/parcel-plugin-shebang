@@ -1,5 +1,5 @@
 /**
  * Shebang plugin for Parcel.
- * @author sintloer <contact@sintloer.com>
+ * @author cyntl3r <damian@cyntler.com>
  */
 console.log(1);

@@ -6,21 +6,21 @@
     "shebang",
     "plugin"
   ],
-  "version": "1.2.5",
+  "version": "1.2.6",
   "main": "index.js",
   "repository": "https://github.com/cyntl3r/parcel-plugin-shebang",
-  "author": "cyntl3r",
+  "author": "cyntl3r <damian@cyntler.com>",
   "license": "MIT",
   "scripts": {
     "test": "jest"
   },
   "devDependencies": {
-    "jest": "^23.6.0",
+    "jest": "^24.8.0",
     "rimraf": "^2.6.2"
   },
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
-    "parcel-bundler": "^1.11.0",
+    "parcel-bundler": "^1.12.3",
     "yn": "^2.0.0"
   }
 }

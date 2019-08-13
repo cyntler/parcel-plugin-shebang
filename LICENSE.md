@@ -1,6 +1,6 @@
 MIT License
 
-Copyright © 2019 cyntl3r <damian@cyntler.com>
+Copyright © 2019-present cyntl3r <damian@cyntler.com>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

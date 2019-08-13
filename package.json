@@ -1,12 +1,12 @@
 {
   "name": "parcel-plugin-shebang",
+  "version": "1.2.8",
   "description": "Shebang plugin for Parcel.",
   "keywords": [
     "parcel-bundler",
     "shebang",
     "plugin"
   ],
-  "version": "1.2.7",
   "main": "index.js",
   "repository": "https://github.com/cyntl3r/parcel-plugin-shebang",
   "author": "cyntl3r <damian@cyntler.com>",
@@ -16,11 +16,11 @@
   },
   "devDependencies": {
     "jest": "^24.8.0",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.3"
   },
   "dependencies": {
-    "escape-string-regexp": "^1.0.5",
+    "escape-string-regexp": "^2.0.0",
     "parcel-bundler": "^1.12.3",
-    "yn": "^2.0.0"
+    "yn": "^3.1.1"
   }
 }

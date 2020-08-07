@@ -1,6 +1,6 @@
 {
-  "name": "parcel-plugin-shebang",
-  "version": "1.2.9",
+  "name": "parcel-plugin-shebang2",
+  "version": "1.0.0",
   "description": "Shebang plugin for Parcel.",
   "keywords": [
     "parcel-bundler",

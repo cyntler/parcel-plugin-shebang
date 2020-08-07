@@ -8,8 +8,8 @@
     "plugin"
   ],
   "main": "index.js",
-  "repository": "https://github.com/cyntl3r/parcel-plugin-shebang",
-  "author": "cyntl3r <damian@cyntler.com>",
+  "repository": "https://github.com/giveerr/parcel-plugin-shebang",
+  "author": "giveerr <givessomeerr.e@gmail.com>",
   "license": "MIT",
   "scripts": {
     "test": "jest"

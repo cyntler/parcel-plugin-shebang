@@ -38,7 +38,7 @@ const rewriteShebang = path => {
     if (hasShebang(content)) {
       const shebang = getShebang(content);
       const re = new RegExp(escapeStringRegexp(shebang), 'gi');
-      writeFile(path, `${shebang}\n${removeBlankLines(content.replace(re, ''))}`);
+      writeFile(path, `${shebang}\n${content.replace(re, '')}`);
     }
   }
 }
@@ -48,14 +48,10 @@ const writeShebang = (path, interpreter) => {
     const content = readFile(path);
     if (!hasShebang(content)) {
       const shebang = buildShebangLine(interpreter);
-      writeFile(path, `${shebang}\n${removeBlankLines(content)}`);
+      writeFile(path, `${shebang}\n${content}`);
     }
   }
 };
-
-const removeBlankLines = (content) => {
-  return content.replace(BLANK_LINE_REGEX, '');
-}
 
 const newBundle = (name, path) => ({
   name,

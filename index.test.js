@@ -11,7 +11,10 @@ const { hasShebang } = require('./utils');
 
 const exampleJsFile = path.join(__dirname, 'mocks/example.js');
 const example2JsFile = path.join(__dirname, 'mocks/example2.js');
-const exampleWithShebangJsFile = path.join(__dirname, 'mocks/exampleWithShebang.js');
+const exampleWithShebangJsFile = path.join(
+  __dirname,
+  'mocks/exampleWithShebang.js'
+);
 const exampleHtmlFile = path.join(__dirname, 'mocks/example.html');
 
 const parcelConfig = {
@@ -21,16 +24,16 @@ const parcelConfig = {
   cache: false,
   logLevel: 2,
   sourceMaps: false,
-  production: true
+  production: true,
 };
 
 describe('parcel-plugin-shebang testing', () => {
-  createBundler = entryFiles => new Bundler(entryFiles, parcelConfig);
+  createBundler = (entryFiles) => new Bundler(entryFiles, parcelConfig);
 
   beforeEach(() => delete process.env['PARCEL_PLUGIN_SHEBANG']);
 
   afterEach(() => rimraf.sync(path.join(__dirname, './test')));
-  
+
   it('should stop plugin process when PARCEL_PLUGIN_SHEBANG environment variable is false', () => {
     process.env.PARCEL_PLUGIN_SHEBANG = false;
 
@@ -45,7 +48,10 @@ describe('parcel-plugin-shebang testing', () => {
     const result = shebangPlugin(bundler);
 
     await bundler.bundle();
-    const content = fs.readFileSync(path.join(__dirname, './test/exampleWithShebang.js'), 'utf-8');
+    const content = fs.readFileSync(
+      path.join(__dirname, './test/exampleWithShebang.js'),
+      'utf-8'
+    );
 
     expect(result).toBeTruthy();
     expect(hasShebang(content)).toBeTruthy();
@@ -56,11 +62,14 @@ describe('parcel-plugin-shebang testing', () => {
     const result = shebangPlugin(bundler, [
       { test: 'It should not working!' },
       { test2: 'It should not working too!' },
-      { interpreter: 'node', files: ['./mocks/example.js'] }
+      { interpreter: 'node', files: ['./mocks/example.js'] },
     ]);
 
     await bundler.bundle();
-    const content = fs.readFileSync(path.join(__dirname, './test/example.js'), 'utf-8');
+    const content = fs.readFileSync(
+      path.join(__dirname, './test/example.js'),
+      'utf-8'
+    );
 
     expect(result).toBeTruthy();
     expect(hasShebang(content)).toBeTruthy();
@@ -69,12 +78,21 @@ describe('parcel-plugin-shebang testing', () => {
   it('should plugin process for multiple entry points', async () => {
     const bundler = createBundler([exampleJsFile, example2JsFile]);
     const result = shebangPlugin(bundler, [
-      { interpreter: 'node', files: ['./mocks/example.js', './mocks/example2.js'] }
+      {
+        interpreter: 'node',
+        files: ['./mocks/example.js', './mocks/example2.js'],
+      },
     ]);
 
     await bundler.bundle();
-    const content = fs.readFileSync(path.join(__dirname, './test/example.js'), 'utf-8');
-    const content2 = fs.readFileSync(path.join(__dirname, './test/example2.js'), 'utf-8');
+    const content = fs.readFileSync(
+      path.join(__dirname, './test/example.js'),
+      'utf-8'
+    );
+    const content2 = fs.readFileSync(
+      path.join(__dirname, './test/example2.js'),
+      'utf-8'
+    );
 
     expect(result).toBeTruthy();
     expect(hasShebang(content)).toBeTruthy();
@@ -89,8 +107,14 @@ describe('parcel-plugin-shebang testing', () => {
     ]);
 
     await bundler.bundle();
-    const content = fs.readFileSync(path.join(__dirname, './test/example.js'), 'utf-8');
-    const content2 = fs.readFileSync(path.join(__dirname, './test/example2.js'), 'utf-8');
+    const content = fs.readFileSync(
+      path.join(__dirname, './test/example.js'),
+      'utf-8'
+    );
+    const content2 = fs.readFileSync(
+      path.join(__dirname, './test/example2.js'),
+      'utf-8'
+    );
 
     expect(result).toBeTruthy();
     expect(hasShebang(content)).toBeTruthy();
@@ -105,7 +129,10 @@ describe('parcel-plugin-shebang testing', () => {
     ]);
 
     await bundler.bundle();
-    const content = fs.readFileSync(path.join(__dirname, './test/example.js'), 'utf-8');
+    const content = fs.readFileSync(
+      path.join(__dirname, './test/example.js'),
+      'utf-8'
+    );
 
     expect(result).toBeTruthy();
     expect(hasShebang(content)).toBeTruthy();
@@ -120,12 +147,11 @@ describe('parcel-plugin-shebang testing', () => {
     const bundle = await bundler.bundle();
 
     let content = '';
-    bundle.childBundles
-      .forEach(({ name, parentBundle }) => {
-        if (parentBundle.entryAsset.name === exampleHtmlFile) {
-          content = fs.readFileSync(name, 'utf-8');
-        }
-      });
+    bundle.childBundles.forEach(({ name, parentBundle }) => {
+      if (parentBundle.entryAsset.name === exampleHtmlFile) {
+        content = fs.readFileSync(name, 'utf-8');
+      }
+    });
 
     expect(result).toBeTruthy();
     expect(hasShebang(content)).toBeTruthy();

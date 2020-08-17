@@ -5,19 +5,20 @@
 const yn = require('yn');
 const {
   processAccordingFoundShebangs,
-  processAccordingConfiguration
+  processAccordingConfiguration,
 } = require('./process');
 const { getBundles } = require('./utils');
 const { getConfig } = require('./config');
 
 module.exports = (bundler, dynamicConfig = null) => {
-  if ('PARCEL_PLUGIN_SHEBANG' in process.env
-    && !yn(process.env.PARCEL_PLUGIN_SHEBANG)
+  if (
+    'PARCEL_PLUGIN_SHEBANG' in process.env &&
+    !yn(process.env.PARCEL_PLUGIN_SHEBANG)
   ) {
     return false;
   }
 
-  bundler.on('bundled', bundle => {
+  bundler.on('bundled', (bundle) => {
     const bundles = getBundles(bundle);
     const conf = getConfig(dynamicConfig);
 

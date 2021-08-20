@@ -1,7 +1,3 @@
-/**
- * Shebang plugin for Parcel.
- * @author cyntler <damian@cyntler.com>
- */
 const yn = require('yn');
 const {
   processAccordingFoundShebangs,

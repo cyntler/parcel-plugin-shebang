@@ -1,12 +1,7 @@
-/**
- * Shebang plugin for Parcel.
- * @author cyntler <damian@cyntler.com>
- */
 const fs = require('fs');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const SHEBANG_REGEX = /#!(.*) (.*)\n/;
-const BLANK_LINE_REGEX = /^(?=\n)$|^\s*|\s*$|\n\n+/gm;
 
 const existsFile = (path) => {
   return fs.existsSync(path);

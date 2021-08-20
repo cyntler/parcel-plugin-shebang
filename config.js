@@ -1,7 +1,3 @@
-/**
- * Shebang plugin for Parcel.
- * @author cyntler <damian@cyntler.com>
- */
 const path = require('path');
 const fs = require('fs');
 const { readFile, existsFile } = require('./utils');

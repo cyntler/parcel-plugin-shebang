@@ -1,7 +1,3 @@
-/**
- * Shebang plugin for Parcel.
- * @author cyntler <damian@cyntler.com>
- */
 const { rewriteShebang, writeShebang } = require('./utils');
 
 const processAccordingFoundShebangs = (bundles) => {

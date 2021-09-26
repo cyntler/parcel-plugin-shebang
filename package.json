@@ -8,9 +8,9 @@
     "hashbang",
     "plugin"
   ],
+  "author": "Damian Cyntler",
   "main": "index.js",
   "repository": "https://github.com/cyntl3r/parcel-plugin-shebang",
-  "author": "cyntler",
   "license": "MIT",
   "scripts": {
     "test": "jest",

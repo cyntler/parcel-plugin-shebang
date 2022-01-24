@@ -58,8 +58,6 @@ The configuration of the plugin is an array of objects describing the name of th
 
 package.json
 ```json
-...
-
 "shebang": [
   {
     "interpreter": "node",
@@ -68,8 +66,6 @@ package.json
     ]
   }
 ]
-
-...
 ```
 
 **Now if you run the command:**

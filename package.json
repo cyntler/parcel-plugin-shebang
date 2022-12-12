@@ -1,7 +1,7 @@
 {
   "name": "parcel-plugin-shebang",
   "version": "1.4.0",
-  "description": "Shebang plugin for Parcel.",
+  "description": "Plugin to generate shebang / hashbang for Parcel v1.x.x.",
   "keywords": [
     "parcel-bundler",
     "shebang",
